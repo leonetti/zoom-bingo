@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import Link from 'next/link';
 
-function globalNavigation() {
+export default function globalNavigation() {
   return (
     <nav>
       <ul>
@@ -19,5 +19,3 @@ function globalNavigation() {
     </nav>
   );
 }
-
-export default globalNavigation;
