@@ -1,7 +1,16 @@
+/*
+  @reset - taking away default browser styles
+  @fonts - paragraphs, headings, blockquotes, links
+  @navigation - the main core website navigation
+  @layout - wrapper, container, sidebars
+  @group - a section or component
+*/
+
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
-   Modified by @AlexanderLeonetti
+   Modified by Alexander Leonetti
+   @reset global
 */
 
 * {
@@ -144,3 +153,7 @@ table {
 a {
   text-decoration: none;
 }
+
+/*
+  @layout global_wrapper
+*/

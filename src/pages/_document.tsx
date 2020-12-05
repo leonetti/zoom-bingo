@@ -1,4 +1,4 @@
-import React from 'react';
+// This file determines the structure of our html document
 import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
