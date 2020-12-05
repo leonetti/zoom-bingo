@@ -16,11 +16,22 @@ async function openDb() {
   * @return array - result contains meeting ids
 */
 export default async function getGameMeetingsById(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    res.status(405).json({ message: 'Accept only GET requests' });
-  }
+  const {
+    method,
+    query: { game_id: GAME_ID },
+  } = req;
 
-  const db = await openDb();
-  const meetings = await db.all('SELECT * FROM Meeting WHERE gameId = ?', [req.query.id]);
-  res.json(meetings);
+  switch (method) {
+    case 'GET': {
+      const db = await openDb();
+      const meetings = GAME_ID
+        ? await db.all('SELECT * FROM Meeting WHERE gameId = ?', [GAME_ID])
+        : await db.all('SELECT * FROM Meeting');
+      res.json(meetings);
+      break;
+    }
+    default:
+      res.setHeader('Allow', ['GET']);
+      res.status(405).end(`Method ${method} Not Allowed`);
+  }
 }

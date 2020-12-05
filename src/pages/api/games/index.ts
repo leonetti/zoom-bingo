@@ -16,11 +16,19 @@ async function openDb() {
   * @return array - array of games with id and name information
 */
 export default async function getAllGames(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    res.status(405).json({ message: 'Accept only GET requests' });
-  }
+  const {
+    method,
+  } = req;
 
-  const db = await openDb();
-  const games = await db.all('SELECT * FROM Game');
-  res.json(games);
+  switch (method) {
+    case 'GET': {
+      const db = await openDb();
+      const allGames = await db.all('SELECT * FROM Game');
+      res.status(200).json(allGames);
+      break;
+    }
+    default:
+      res.setHeader('Allow', ['GET']);
+      res.status(405).end(`Method ${method} Not Allowed`);
+  }
 }
