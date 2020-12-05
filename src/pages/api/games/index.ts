@@ -20,15 +20,14 @@ export default async function getAllGames(req: NextApiRequest, res: NextApiRespo
     method,
   } = req;
 
-  switch (method) {
-    case 'GET': {
-      const db = await openDb();
-      const allGames = await db.all('SELECT * FROM Game');
-      res.status(200).json(allGames);
-      break;
-    }
-    default:
-      res.setHeader('Allow', ['GET']);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (method !== 'GET') {
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
+
+  const db = await openDb();
+
+  // Default method GET
+  const getAllGamesQuery = 'SELECT * FROM Game';
+  const games = await db.all(getAllGamesQuery);
+  res.status(200).json(games);
 }

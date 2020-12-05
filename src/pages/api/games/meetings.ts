@@ -21,17 +21,31 @@ export default async function getGameMeetingsById(req: NextApiRequest, res: Next
     query: { game_id: GAME_ID },
   } = req;
 
-  switch (method) {
-    case 'GET': {
-      const db = await openDb();
-      const meetings = GAME_ID
-        ? await db.all('SELECT meetingId, gameId, COUNT(DISTINCT User.id) FROM Meeting INNER JOIN User ON Meeting.id = User.meetingId WHERE gameId = ? GROUP BY meetingId', [GAME_ID])
-        : await db.all('SELECT meetingId, gameId, COUNT(DISTINCT User.id) FROM Meeting INNER JOIN User ON Meeting.id = User.meetingId GROUP BY meetingId');
-      res.json(meetings);
-      break;
-    }
-    default:
-      res.setHeader('Allow', ['GET']);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (method !== 'GET') {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
+
+  const db = await openDb();
+
+  // Default GET method
+  const getAllMeetingsQuery = `SELECT
+    meetingId,
+    gameId,
+    COUNT(DISTINCT User.id) As userCount
+  FROM Meeting INNER JOIN User ON Meeting.id = User.meetingId
+  GROUP BY meetingId`;
+
+  const getMeetingsByGameIdQuery = `SELECT
+    meetingId,
+    gameId,
+    COUNT(DISTINCT User.id) As userCount
+  FROM Meeting INNER JOIN User ON Meeting.id = User.meetingId
+  WHERE gameId = ?
+  GROUP BY meetingId`;
+
+  const meetings = GAME_ID
+    ? await db.all(getMeetingsByGameIdQuery, [GAME_ID])
+    : await db.all(getAllMeetingsQuery);
+  res.json(meetings);
 }

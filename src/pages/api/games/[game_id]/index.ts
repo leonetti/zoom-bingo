@@ -19,29 +19,29 @@ export default async function getGameById(req: NextApiRequest, res: NextApiRespo
   const {
     method,
     query: { game_id: GAME_ID },
+    body: { name, rules },
   } = req;
 
-  switch (method) {
-    case 'GET': {
-      const db = await openDb();
-      const game = await db.get('SELECT * FROM Game WHERE ID = ?', [GAME_ID]);
-      res.status(200).json(game);
-      break;
-    }
-    case 'PUT': {
-      const db = await openDb();
-      const statement = await db.prepare(
-        'UPDATE game SET name = ?, rules = ? where id = ?',
-      );
-      await statement.run(
-        req.body.name,
-        req.body.rules,
-        req.query.id,
-      );
-      break;
-    }
-    default:
-      res.setHeader('Allow', ['GET', 'PUT']);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (method !== 'PUT' && method !== 'GET') {
+    res.setHeader('Allow', ['GET', 'PUT']);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
+
+  const db = await openDb();
+
+  if (method === 'PUT') {
+    const updateGameByIdQuery = 'UPDATE Game SET name = ?, rules = ? where id = ?';
+
+    const statement = await db.prepare(updateGameByIdQuery);
+    await statement.run(
+      name,
+      rules,
+      GAME_ID,
+    );
+  }
+
+  // Default method GET
+  const getGameByIdQuery = 'SELECT * FROM Game WHERE id = ?';
+  const game = await db.get(getGameByIdQuery, [GAME_ID]);
+  res.status(200).json(game);
 }
