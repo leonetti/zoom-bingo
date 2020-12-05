@@ -25,8 +25,8 @@ export default async function getGameMeetingsById(req: NextApiRequest, res: Next
     case 'GET': {
       const db = await openDb();
       const meetings = GAME_ID
-        ? await db.all('SELECT * FROM Meeting WHERE gameId = ?', [GAME_ID])
-        : await db.all('SELECT * FROM Meeting');
+        ? await db.all('SELECT meetingId, gameId, COUNT(DISTINCT User.id) FROM Meeting INNER JOIN User ON Meeting.id = User.meetingId WHERE gameId = ? GROUP BY meetingId', [GAME_ID])
+        : await db.all('SELECT meetingId, gameId, COUNT(DISTINCT User.id) FROM Meeting INNER JOIN User ON Meeting.id = User.meetingId GROUP BY meetingId');
       res.json(meetings);
       break;
     }

@@ -12,6 +12,7 @@ CREATE TABLE Meeting (
 
 CREATE TABLE User (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
   meetingId INTEGER REFERENCES Meeting(id)
 );
 
@@ -22,9 +23,12 @@ INSERT INTO Meeting (gameId) values (1);
 INSERT INTO Meeting (gameId) values (1);
 INSERT INTO Meeting (gameId) values (2);
 
-INSERT INTO USER (meetingId) values (1);
-INSERT INTO USER (meetingId) values (1);
-INSERT INTO USER (meetingId) values (1);
+INSERT INTO USER (meetingId, name) values (1, 'Jason');
+INSERT INTO USER (meetingId, name) values (2, 'Oddball');
+INSERT INTO USER (meetingId, name) values (1, 'Kelly');
+INSERT INTO USER (meetingId, name) values (1, 'Alex');
+INSERT INTO USER (meetingId, name) values (1, 'Jason');
+INSERT INTO USER (meetingId, name) values (3, 'Jason');
 
 -- Down
 DROP TABLE Game;
