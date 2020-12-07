@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 interface GameList {
-  list: Game[]
+  games: Game[]
 }
 
 interface Game {
@@ -16,7 +16,7 @@ interface Game {
   rules: string;
 }
 
-export default function games({ list }: GameList) {
+export default function Games({ games }: GameList) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
@@ -28,7 +28,7 @@ export default function games({ list }: GameList) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {list.map((row: Game) => (
+          {games.map((row: Game) => (
             <TableRow key={row.id}>
               <TableCell component="th" scope="row">
                 {row.id}
@@ -43,8 +43,8 @@ export default function games({ list }: GameList) {
   );
 }
 
-games.getInitialProps = async () => {
+Games.getInitialProps = async () => {
   const res = await fetch('http://localhost:3000/api/games');
   const json = await res.json();
-  return { list: json };
+  return { games: json };
 };

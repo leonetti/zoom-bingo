@@ -4,7 +4,7 @@ import React from 'react';
 import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import GlobalNavigation from '../components/globalNavigation';
+import GlobalNavigation from '../components/GlobalNavigation';
 import theme from '../styles/theme';
 
 export default function MyApp(props: any) {
@@ -25,9 +25,10 @@ export default function MyApp(props: any) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <GlobalNavigation />
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <Component {...pageProps} />
+        <GlobalNavigation>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+          <Component {...pageProps} />
+        </GlobalNavigation>
       </ThemeProvider>
     </>
   );
