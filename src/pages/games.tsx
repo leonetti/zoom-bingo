@@ -22,7 +22,6 @@ export default function Games({ games }: GameList) {
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Id</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Rules</TableCell>
           </TableRow>
@@ -30,9 +29,6 @@ export default function Games({ games }: GameList) {
         <TableBody>
           {games.map((row: Game) => (
             <TableRow key={row.id}>
-              <TableCell component="th" scope="row">
-                {row.id}
-              </TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row.rules}</TableCell>
             </TableRow>

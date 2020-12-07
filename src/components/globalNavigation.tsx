@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,6 +20,11 @@ import MailIcon from '@material-ui/icons/Mail';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import GamepadIcon from '@material-ui/icons/Gamepad';
 import GamepadTwoToneIcon from '@material-ui/icons/GamepadTwoTone';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
+import Tooltip from '@material-ui/core/Tooltip';
+import { makeStyles, useTheme, fade } from '@material-ui/core/styles';
+import ConditionalWrap from './ConditionalWrap';
 
 const drawerWidth = 240;
 
@@ -84,6 +88,43 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(3),
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '20ch',
+    },
+  },
 }));
 
 export default function GlobalNavigation({ children }: any) {
@@ -128,6 +169,19 @@ export default function GlobalNavigation({ children }: any) {
           <Typography variant="h6" noWrap>
             Zoom Games
           </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -152,15 +206,22 @@ export default function GlobalNavigation({ children }: any) {
         <List>
           {[{ name: 'Dashboard', href: '/' }, { name: 'All Games', href: '/games' }, { name: 'Bingo', href: '/' }, { name: 'Checkers', href: '/' }].map((navItem: NavItem, index: number) => (
             <Link href={navItem.href} key={navItem.name}>
-              <ListItem title={navItem.name} button component="a" onClick={handleDrawerClose}>
-                {index !== 1 && (
-                  <ListItemIcon>{index === 0 ? <DashboardIcon /> : <GamepadIcon />}</ListItemIcon>
-                )}
-                {index === 1 && (
-                  <ListItemIcon><GamepadTwoToneIcon /></ListItemIcon>
-                )}
-                <ListItemText primary={navItem.name} />
-              </ListItem>
+              <ConditionalWrap
+                condition={!open}
+                // eslint-disable-next-line @typescript-eslint/no-shadow
+                wrap={(children: any) => (<Tooltip title={navItem.name}>{children}</Tooltip>)}
+              >
+                <ListItem button component="a" onClick={handleDrawerClose}>
+                  {index !== 1 && (
+                    <ListItemIcon>{index === 0 ? <DashboardIcon /> : <GamepadIcon />}</ListItemIcon>
+                  )}
+                  {index === 1 && (
+                    <ListItemIcon><GamepadTwoToneIcon /></ListItemIcon>
+                  )}
+                  <ListItemText primary={navItem.name} />
+                </ListItem>
+              </ConditionalWrap>
+
             </Link>
           ))}
         </List>
